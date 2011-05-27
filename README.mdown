@@ -7,3 +7,7 @@ see scripts/mvp.coffee for framework
 see scripts/test.coffee for test implementation
 
 NOT SAFE FOR USE.
+
+# Compile Steps
+
+        coffee --join js/test.js --watch --compile scripts/*.coffee
