@@ -1,13 +1,15 @@
-# mvp.coffee
+# Americano
+## Potent MVP for your Coffeescript
 
-Coffeescript MVP micro-framework based off the GWT-Presenter project and gTrax.
+Americano is a Model-View-Presenter Micro-Framework based off the GWT-Presenter project and it's implementation in the SheepdogInc.ca [project gTrax](http://app.gtraxapp.com/).
 
-see scripts/mvp.coffee for framework
+ - Framework Code is in **Americano.coffee** in *scripts*
+ - A sample MVP Implementation exists in **test.coffee**
 
-see scripts/test.coffee for test implementation
-
-NOT SAFE FOR USE.
+**NOT SAFE FOR USE.**
 
 # Compile Steps
 
-        coffee --join js/test.js --watch --compile scripts/*.coffee
+Compile steps have been put into `build.sh` because Coffeescript was clobbering the JS when it would over-write the old one.
+
+    ./build.sh
