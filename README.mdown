@@ -1,0 +1,8 @@
+# mvp.coffee
+
+Coffeescript MVP micro-framework based off the GWT-Presenter project and gTrax.
+
+see mvp.coffee for framework
+see test.coffee for test implementation
+
+NOT SAFE FOR USE.
