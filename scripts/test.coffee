@@ -1,3 +1,4 @@
+
 INJECTOR = new Injector
         
 class MainPresenter extends Presenter
@@ -8,48 +9,78 @@ class MainPresenter extends Presenter
             INJECTOR.get_logger().log("ERROR: " + event.data, 5)
         , true)
         
-        @register_handler('display_message', (event) ->
-            INJECTOR.get_logger().log(event.data, 5)
-            INJECTOR.get_event_bus().fire("error", event.data)
-        , true)
         
         @register_handler("click", (event) -> 
-            INJECTOR.get_event_bus().fire("error", "alert button clicked")
+            INJECTOR.get_event_bus().fire("display_message", "alert button clicked")
         , @display.get_alert_button())
-
-
+    
 class MainDisplay extends Display
     
-    constructor: () ->
-        INJECTOR.get_logger().log(@get_thing)
+    container = $('<div/>')
+    
+    constructor: () ->    
+        @button = $('<input/>', {type: 'submit'})   
+        @button.appendTo(container)
         
-    get_alert_button: () ->
-        return $('#alert_popup')[0]
+    get_alert_button: -> @button[0]
+        
+    as_widget: -> container
+
+class MessageCentre extends Presenter
+
+    on_bind: () ->
+        display = @display
+        @register_handler("display_message", (event) ->
+            console.log("displaying message?")
+            display.show_message(event.data)
+        , true)
+
+class MessageCentreDisplay extends Display
+    
+    container = $('<div/>')
+    
+    constructor: () ->
+        @num_messages = 0
+        @message_holder = $('<h1/>')
+        @message_holder.appendTo(container)
+        
+    show_message: (message) ->
+        @message_holder.animate
+            opacity: '0.5'
+        
+        @message_holder.text(message + @num_messages)
+        
+        @num_messages += 1
+        
+        @message_holder.animate
+            opacity: '1.0'
+        
+    as_widget: -> container
 
 class Application
 
     event_bus = new EventBus()
     logger = new Logger()
-
+    
     run: ->
         INJECTOR.register("get_event_bus", -> return event_bus)
         INJECTOR.register("get_logger", -> return logger)
-                
+        INJECTOR.register("get_root_panel", -> return $("#application"))
+        
         main_presenter = new MainPresenter(new MainDisplay())
         main_presenter.bind()
         
-        main_presenter.fire_handler('display_message', "HI!");
-        event_bus.fire('display_message', "Globally Listening");
+        message_presenter = new MessageCentre(new MessageCentreDisplay())
+        message_presenter.bind()
         
-        logger.log("Un-binding, you should see no message after this.")
         
-        main_presenter.unregister_handler('display_message')
+        event_bus.fire('display_message', "Globally Listening ... ");
         
-        event_bus.fire('display_message', "You can't see me")
-        event_bus.fire('error', "You can still see me")
-
+        INJECTOR.get_root_panel().append(main_presenter.get_display().as_widget())
+        INJECTOR.get_root_panel().append(message_presenter.get_display().as_widget())
 
 $(document).ready ->
+    
     app = new Application()
 
     if window

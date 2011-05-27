@@ -48,6 +48,8 @@ class Presenter
     constructor: (@display) ->
         @bound = false
         @handlers = {}
+    
+    get_display: () -> @display
 
     on_bind: () ->
         alert "Unimplemented"
@@ -89,11 +91,10 @@ class Presenter
                 for hndlr in hndlrs
                     hndlr.call({data:data})
                     
-
 class Display
-
-    constructor: () ->
-        @thing = "foo"
-
-    as_widget: () ->
-        return "unimplemented"
+    as_widget: -> "unimplemented"
+        
+        
+        
+        
+        
