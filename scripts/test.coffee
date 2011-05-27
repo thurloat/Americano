@@ -11,7 +11,7 @@ class MainPresenter extends Presenter
         
         
         @register_handler("click", (event) -> 
-            INJECTOR.get_event_bus().fire("display_message", "alert button clicked")
+            INJECTOR.get_event_bus().fire "display_message", "alert button clicked"
         , @display.get_alert_button())
     
 class MainDisplay extends Display
@@ -29,10 +29,9 @@ class MainDisplay extends Display
 class MessageCentre extends Presenter
 
     on_bind: () ->
-        display = @display
-        @register_handler("display_message", (event) ->
+        @register_handler("display_message", (event) =>
             console.log("displaying message?")
-            display.show_message(event.data)
+            @display.show_message(event.data)
         , true)
 
 class MessageCentreDisplay extends Display
@@ -45,15 +44,13 @@ class MessageCentreDisplay extends Display
         @message_holder.appendTo(container)
         
     show_message: (message) ->
-        @message_holder.animate
-            opacity: '0.5'
+        @message_holder.animate opacity: '0.5'
         
-        @message_holder.text(message + @num_messages)
+        @message_holder.text message + @num_messages
         
         @num_messages += 1
         
-        @message_holder.animate
-            opacity: '1.0'
+        @message_holder.animate opacity: '1.0'
         
     as_widget: -> container
 
@@ -72,7 +69,6 @@ class Application
         
         message_presenter = new MessageCentre(new MessageCentreDisplay())
         message_presenter.bind()
-        
         
         event_bus.fire('display_message', "Globally Listening ... ");
         
