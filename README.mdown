@@ -1,4 +1,13 @@
 # Americano
+
+    
+       _____                                 
+      (, /  |                ,               
+        /---| ___    _  __     _  _  __   ___
+     ) /    |_// (__(/_/ (__(_(__(_(_/ (_(_) 
+    (_/                                      
+
+
 ## Potent MVP for your Coffeescript
 
 Americano is a Model-View-Presenter Micro-Framework based off the GWT-Presenter project and it's implementation in the SheepdogInc.ca [project gTrax](http://app.gtraxapp.com/).
