@@ -8,7 +8,7 @@ class Injector
 
         and you can register functions with:
 
-        -> INJECTOR.register('singleton_getter', -> )
+        -> INJECTOR.register('singletonGetter', -> )
     ###
     
     register: (name, factory) ->
@@ -28,23 +28,23 @@ class EventBus
     
     constructor: () ->
 
-    fire: (event_name, data) ->
+    fire: (eventName, data) ->
         ### FIRE EVENT-PEDOS
         
-            @param {string} event_name The name of the event you wish to fire
+            @param {string} eventName The name of the event you wish to fire
             @param {Object} data The data you wish for the event to receive
         ###
         
         e = document.createEvent "Event"
-        e.initEvent(event_name, true, true)
+        e.initEvent(eventName, true, true)
         e.data = data
         window.dispatchEvent e
 
-    add_handler: (event_name, callback) ->
+    addHandler: (eventName, callback) ->
         ### Add a generic event handler to the global scope. 
             Keep track of it on your own, because a remove is not supported.
         ###
-        window.addEventListener(event_name, callback, false)
+        window.addEventListener(eventName, callback, false)
 
 class Logger
     ### Hey Look, a handy-dandy logger.
@@ -54,16 +54,16 @@ class Logger
     
     constructor: () ->
 
-    default_log_threshold = 2;
+    defaultLogThreshold = 2;
 
-    log: (message, log_level) ->
+    log: (message, logLevel) ->
         ### log a message with an optional log level
         
             @param {string} message The message to log
-            @param {int} log_level How much of an ermergency is it?
+            @param {int} logLevel How much of an ermergency is it?
         ###
         msg = message
-        if log_level > default_log_threshold
+        if logLevel > defaultLogThreshold
             message += "!"
         console.log msg
 
@@ -107,16 +107,16 @@ class Presenter
         @bound = false
         @handlers = {}
     
-    get_display: () -> @display
+    getDisplay: () -> @display
 
-    on_bind: () ->
+    onBind: () ->
         alert "Unimplemented"
 
     bind: () ->
         ### The method to call to put the processing gears into action and
             bind all the events
         ###
-        @on_bind()
+        @onBind()
         @bound = true
 
     unbind: () ->
@@ -128,7 +128,7 @@ class Presenter
                 hndlr.remove()
         @handlers = {}
 
-    register_handler: (name, scope, handler) ->
+    registerHandler: (name, scope, handler) ->
         ### Registers an event handler with the Presenter with the option 
             of scoping it strictly to the presenter, globally, or an element
         
@@ -148,7 +148,7 @@ class Presenter
         @handlers[name] = [] if !@handlers[name]?    
         @handlers[name].push hndlr        
             
-    unregister_handler: (name) ->
+    unregisterHandler: (name) ->
         ### Removes all handlers from this presenter under an event name
         
             @param {string} name The name of the event you want to remove
@@ -159,7 +159,7 @@ class Presenter
                     hndlr.remove()
                 @handlers[nm] = []
 
-    fire_handler: (name, data) ->
+    fireHandler: (name, data) ->
         ### FIRE HANDLE-PEDOS
             
             @param {string} name The event name to fire
@@ -178,4 +178,4 @@ class Display
         to reach DEEP inside of me to handle events that I might fire. I should
         not format data, or ever talk directly to a model.
     ###
-    as_widget: -> "unimplemented"
+    asWidget: -> "unimplemented"

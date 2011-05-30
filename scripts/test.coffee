@@ -3,13 +3,13 @@ INJECTOR = new Injector
 
 class MainPresenter extends Presenter
 
-    on_bind: () ->
+    onBind: () ->
 
-        @register_handler "error", true, (event) ->
-            INJECTOR.get_logger().log("ERROR: " + event.data, 5)
+        @registerHandler "error", true, (event) ->
+            INJECTOR.getLogger().log("ERROR: " + event.data, 5)
 
-        @register_handler "click", @display.get_alert_button(), (event) ->
-            INJECTOR.get_event_bus().fire "display_message", "alert button clicked"
+        @registerHandler "click", @display.getAlertButton(), (event) ->
+            INJECTOR.getEventBus().fire "displayMessage", "alert button clicked"
 
 class MainDisplay extends Display
 
@@ -19,57 +19,57 @@ class MainDisplay extends Display
         @button = $('<input/>', {type: 'submit'})
         @button.appendTo(container)
 
-    get_alert_button: -> @button[0]
+    getAlertButton: -> @button[0]
 
-    as_widget: -> container
+    asWidget: -> container
 
 class MessageCentre extends Presenter
 
-    on_bind: () ->
-        @register_handler "display_message", true, (event) =>
+    onBind: () ->
+        @registerHandler "displayMessage", true, (event) =>
             console.log("displaying message?")
-            @display.show_message(event.data)
+            @display.showMessage(event.data)
 
 class MessageCentreDisplay extends Display
 
     container = $('<div/>')
 
     constructor: () ->
-        @num_messages = 0
-        @message_holder = $('<h1/>')
-        @message_holder.appendTo(container)
+        @numMessages = 0
+        @messageHolder = $('<h1/>')
+        @messageHolder.appendTo(container)
 
-    show_message: (message) ->
-        @message_holder.animate opacity: '0.5'
+    showMessage: (message) ->
+        @messageHolder.animate opacity: '0.5'
 
-        @message_holder.text message + @num_messages
+        @messageHolder.text message + @numMessages
 
-        @num_messages += 1
+        @numMessages += 1
 
-        @message_holder.animate opacity: '1.0'
+        @messageHolder.animate opacity: '1.0'
 
-    as_widget: -> container
+    asWidget: -> container
 
 class Application
 
-    event_bus = new EventBus()
+    eventBus = new EventBus()
     logger = new Logger()
 
     run: ->
-        INJECTOR.register("get_event_bus", -> return event_bus)
-        INJECTOR.register("get_logger", -> return logger)
-        INJECTOR.register("get_root_panel", -> return $("#application"))
+        INJECTOR.register("getEventBus", -> return eventBus)
+        INJECTOR.register("getLogger", -> return logger)
+        INJECTOR.register("getRootPanel", -> return $("#application"))
 
-        main_presenter = new MainPresenter(new MainDisplay())
-        main_presenter.bind()
+        mainPresenter = new MainPresenter(new MainDisplay())
+        mainPresenter.bind()
 
-        message_presenter = new MessageCentre(new MessageCentreDisplay())
-        message_presenter.bind()
+        messagePresenter = new MessageCentre(new MessageCentreDisplay())
+        messagePresenter.bind()
 
-        event_bus.fire('display_message', "Globally Listening ... ");
+        eventBus.fire('displayMessage', "Globally Listening ... ");
 
-        INJECTOR.get_root_panel().append(main_presenter.get_display().as_widget())
-        INJECTOR.get_root_panel().append(message_presenter.get_display().as_widget())
+        INJECTOR.getRootPanel().append(mainPresenter.getDisplay().asWidget())
+        INJECTOR.getRootPanel().append(messagePresenter.getDisplay().asWidget())
 
 $(document).ready ->
 
