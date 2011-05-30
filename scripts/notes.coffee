@@ -40,6 +40,9 @@ class NotePresenter extends Presenter
         # correctly.
         INJECTOR.getEventBus().fire("notify", message: "Note Saved")
       
+    @registerHandler "refreshDisplay", true, (event) =>
+      @fireHandler "newNote"
+      
   setNote: (note) ->
     # Set current note to the one provided.
     @note = note
@@ -93,6 +96,12 @@ class NoteListPresenter extends Presenter
       # Listen to the child NodeListItemPresenters for a noteClicked event
       # and pass on the loadNote message through the event bus with the note
       INJECTOR.getEventBus().fire("loadNote", event.data.note)
+      
+    @registerHandler "noteDeleteClicked", true, (event) ->
+      
+      INJECTOR.getEventBus().fire "notify", message: "Deleting Note"
+      INJECTOR.getDB().remove event.data.note.key, -> 
+        INJECTOR.getEventBus().fire "refreshDisplay"
     
     @registerHandler "refreshDisplay", true, (event) =>
       # Register a handler for refreshing the display when data is stale.
@@ -112,7 +121,7 @@ class NoteListPresenter extends Presenter
     INJECTOR.getDB().all (notes) =>
       for note in notes
         @addNote(note)
-
+    
   addNote: (note) ->
     # Add a new note to the note list by creating a NoteListItemPresenter, and
     # adding it's widget to the display.
@@ -165,7 +174,11 @@ class NoteListItemPresenter extends Presenter
       # Fire the 'noteClicked' message on the event bus, so the NotePresenter
       # will hear it.
       
-      INJECTOR.getEventBus().fire('noteClicked', note: @note)
+      INJECTOR.getEventBus().fire 'noteClicked', note: @note
+    
+    @registerHandler "click", @display.getDeleteButton(), (event) =>
+      
+      INJECTOR.getEventBus().fire 'noteDeleteClicked', note: @note
     
     @display.setText @note.title
 
@@ -174,9 +187,21 @@ class NoteListItemDisplay extends Display
    
   constructor: () ->
     @container = $('<li/>')
+    @noteLabel = $('<span/>').appendTo @container
     
-  getListItem: () -> @container[0]
-  setText: (text) -> @container.text text
+    deleteParams = 
+      class: 'delete'
+      text: 'x'
+    
+    @deleteButton = $('<span/>', deleteParams)
+    @deleteButton.appendTo @container
+    
+  getListItem: -> @noteLabel[0]
+  
+  getDeleteButton: -> @deleteButton[0]
+  
+  setText: (text) -> @noteLabel.text text
+  
   asWidget: -> @container[0]
 
 class NotificationPresenter extends Presenter
@@ -195,19 +220,21 @@ class NotificationDisplay extends Display
   # Notification Display Widget
   
   constructor: ->
+    @showingMessage = false
+    
     @container = $('<div/>', class: 'notification')  
     @notification = $('<span/>', text: 'waiting on notifications')
     @notification.appendTo @container
     
   flashMessage: ->
     # Fancy message flashing
-    @show()
-    @container.animate opacity: '0.1', 2500, => 
-      @hide()
-      @container.css 'opacity', '1'
-  
-  hide: -> @container.hide()
-  show: -> @container.show()  
+    if @showingMessage is false
+      @showingMessage = true
+      @container.animate opacity: 'toggle', 250, =>
+        @container.animate opacity: 'toggle', 1500, =>
+          @showingMessage = false
+
+
   setText: (text) -> @notification.text text
   asWidget: -> @container[0]
 

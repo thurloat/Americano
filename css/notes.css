@@ -77,6 +77,7 @@ h2{
   border-radius: 6px;
   cursor: pointer;
   clear: left;
+  position: relative;
 }
 
 .noteList ul li:hover{
@@ -95,4 +96,20 @@ textarea {
   height: 100px;
   font-size: 14px;
   margin-left: 6px;
+}
+
+.noteList span{
+  width: 100%;
+  display: block;
+}
+
+.noteList span.delete {
+  width: 16px;
+  position: absolute;
+  right: 8px;
+  top: 4px;
+  color: #C00;
+}
+span.delete:hover{
+  color: #F44;
 }
