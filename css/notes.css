@@ -1,0 +1,98 @@
+div#application{
+  width: 500px;
+  border-radius: 6px;
+  background-color: #EBD5A4;
+  height: 350px;
+  font-family: 'Helvetica Neue';
+}
+
+div#application > h1{
+  font-weight: 100;
+  text-align: center;
+  padding: 12px 6px 6px 6px;
+  margin: 0 0 12px 0;
+  border-bottom: 3px solid #5F3530;
+  color: #5F3530;
+}
+
+div.notification{
+  display: none;
+  position: absolute;
+  top: 6px;
+  width: 488px;
+  padding: 6px;
+  background-color: #333;
+  color: #FFF;
+  font-weight: 300;
+  border-radius: 6px;
+  text-align: center;
+}
+
+input[type=submit]{
+  float:left;
+}
+
+h2{
+  color: #5F3530;
+  padding: 0;
+  margin: 0;
+  clear: left;
+}
+.editor{
+  background: #5F3530;
+  border-radius: 4px;
+  width: 310px;
+  float: right;
+  padding: 6px;
+  margin-right: 6px;
+}
+
+.editor h4{
+  margin: 0;
+  color: #EBD5A4;
+  padding: 6px;
+  font-weight: 400;
+}
+
+.editor h2{
+  color: #FFF;
+  margin: 6px;
+}
+
+
+.note_list{
+  width: 150px;
+  margin-left: 6px;
+  padding: 12px 0px 0px 6px;
+}
+
+.note_list ul{
+  margin: 0; padding: 6px 0 0 0 ;
+  list-style: none;
+}
+
+.note_list ul li{
+  padding: 6px;
+  color: #666;
+  border-radius: 6px;
+  cursor: pointer;
+  clear: left;
+}
+
+.note_list ul li:hover{
+  background-color: #F6EBD7;
+  color: #111;
+}
+
+input[type=text]{
+  width: 95%;
+  font-size: 14px;
+  margin-left: 6px;
+}
+
+textarea {
+  width: 95%;
+  height: 100px;
+  font-size: 14px;
+  margin-left: 6px;
+}

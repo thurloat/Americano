@@ -1,2 +1,2 @@
-rm js/test.js
-coffee --join js/test.js --compile scripts/*.coffee
+rm js/notes.js
+coffee --join js/notes.js --compile scripts/Americano.coffee scripts/notes.coffee 
