@@ -25,6 +25,8 @@ Framework Code is in **Americano.coffee** in *scripts*
 
 As an example of how "Just the **P**" Americano is; I created a sample application called "Americanotes". Just a simple application to create, edit notes, stored in your browser. *Handy*!
 
+Here's a Quick [video demo](http://screencast.com/t/iI4SJsdG) of Americanotes in action.
+
 A quick breakdown here shows the pieces pulled together for this app:
 
 ### Model - Lawnchair.js ###
