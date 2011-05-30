@@ -6,34 +6,31 @@ class NotePresenter extends Presenter
     
     # Register a handler for the 'new_note' event to set display up for a new 
     # note object
-    @register_handler("new_note", (event) =>
+    @register_handler "new_note", true, (event) =>
 
       # Create a new note with an empty object
       @set_note
         title: ''
         body: ''
-    , true)
     
     # Register a handler with the 'load_note' event to change the note being
     # edited to the one in the event data.  
-    @register_handler("load_note", (event) =>
+    @register_handler "load_note", true, (event) =>
 
       @set_note event.data
       
       # Pass along a notification to mention that the new note has loaded.
       INJECTOR.get_event_bus().fire('notify', message: "Loaded Note:" + event.data.title)
-    
-    , true)
       
     # Register a handler on the save button's 'click' to save the note being
     # edited right now.
-    @register_handler("click", (event) =>
+    @register_handler "click", @display.get_save_button(), (event) =>
       
       # Set the data and insert the record into the database.
       @note.title = @display.get_title_box_value()
       @note.body = @display.get_body_box_value()
       
-      INJECTOR.get_db().save(@note, =>
+      INJECTOR.get_db().save @note, =>
         
         # Since data is stale now, fire a 'refresh_display' event so any 
         # presenter that needs to update it's info can do so with freshness.
@@ -42,12 +39,9 @@ class NotePresenter extends Presenter
         # Send out a notification telling the user that the note saved 
         # correctly.
         INJECTOR.get_event_bus().fire("notify", message: "Note Saved")
-      )
-    , @display.get_save_button())
       
   set_note: (note) ->
     # Set current note to the one provided.
-    
     @note = note
     @display.set_title_box_value note.title
     @display.set_body_box_value note.body
@@ -88,43 +82,45 @@ class NoteListPresenter extends Presenter
   # This NoteListPresenter manages a list of notes for the user.
   
   on_bind: () ->
-     
-    @register_handler("click", (event) ->
+    @notes = []
+    
+    @register_handler "click", @display.get_new_note_button(), (event) ->
       # Create a new note, and push a notification saying so.
       INJECTOR.get_event_bus().fire("new_note", null)
       INJECTOR.get_event_bus().fire('notify', message: "Creating New Note")
-    , @display.get_new_note_button())
     
-    @register_handler("note_clicked", (event) ->
+    @register_handler "note_clicked", true, (event) ->
       # Listen to the child NodeListItemPresenters for a note_clicked event
       # and pass on the load_note message through the event bus with the note
       INJECTOR.get_event_bus().fire("load_note", event.data.note)
-    , true)
     
-    @register_handler("refresh_display", (event) =>
+    @register_handler "refresh_display", true, (event) =>
       # Register a handler for refreshing the display when data is stale.
       @refresh()
-    , true)
     
     @refresh()
   
   refresh: () ->
     # Refresh the display by fetching fresh data.
+    
+    for note in @notes
+      note.unbind()
+    
     @notes = []
     @display.clear_notes()
     
-    INJECTOR.get_db().all((notes)=>
+    INJECTOR.get_db().all (notes) =>
       for note in notes
         @add_note(note)
-    )
 
   add_note: (note) ->
     # Add a new note to the note list by creating a NoteListItemPresenter, and
     # adding it's widget to the display.
-    np = new NoteListItemPresenter(note, new NoteListItemDisplay())
+     
+    np = new NoteListItemPresenter note, new NoteListItemDisplay()
     np.bind()
     
-    @display.add_note(np.get_display().as_widget())
+    @display.add_note np.get_display().as_widget()
     @notes.push np
 
     
@@ -165,12 +161,11 @@ class NoteListItemPresenter extends Presenter
   on_bind: ->
     
     # Register a click handler for the display's list item
-    @register_handler("click", (event) =>
+    @register_handler "click", @display.get_list_item(), (event) =>
       # Fire the 'note_clicked' message on the event bus, so the NotePresenter
       # will hear it.
       
       INJECTOR.get_event_bus().fire('note_clicked', note: @note)
-    , @display.get_list_item())
     
     @display.set_text @note.title
 
@@ -190,12 +185,11 @@ class NotificationPresenter extends Presenter
   on_bind: ->
       
     # Listen to 'notify' globally
-    @register_handler("notify", (event) =>
+    @register_handler "notify", true, (event) =>
       
       # Display the message & animate
       @display.set_text(event.data.message)
       @display.flash_message()
-    , true)
 
 class NotificationDisplay extends Display
   # Notification Display Widget
@@ -226,10 +220,10 @@ class Application
 
   run: ->
     # Register shared objects in the injector registry
-    INJECTOR.register("get_event_bus", -> return event_bus)
-    INJECTOR.register("get_logger", -> return logger)
-    INJECTOR.register("get_root_panel", -> return $("#application"))
-    INJECTOR.register("get_db", -> return db)
+    INJECTOR.register("get_event_bus", -> event_bus)
+    INJECTOR.register("get_logger", -> logger)
+    INJECTOR.register("get_root_panel", -> $("#application"))
+    INJECTOR.register("get_db", -> db)
 
     # Create and bind all of the presenters for this application
     note_presenter = new NotePresenter(new NoteDisplay())

@@ -5,14 +5,11 @@ class MainPresenter extends Presenter
 
     on_bind: () ->
 
-        @register_handler("error", (event) ->
+        @register_handler "error", true, (event) ->
             INJECTOR.get_logger().log("ERROR: " + event.data, 5)
-        , true)
 
-
-        @register_handler("click", (event) ->
+        @register_handler "click", @display.get_alert_button(), (event) ->
             INJECTOR.get_event_bus().fire "display_message", "alert button clicked"
-        , @display.get_alert_button())
 
 class MainDisplay extends Display
 
@@ -29,10 +26,9 @@ class MainDisplay extends Display
 class MessageCentre extends Presenter
 
     on_bind: () ->
-        @register_handler("display_message", (event) =>
+        @register_handler "display_message", true, (event) =>
             console.log("displaying message?")
             @display.show_message(event.data)
-        , true)
 
 class MessageCentreDisplay extends Display
 
