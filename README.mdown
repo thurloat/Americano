@@ -10,7 +10,7 @@
 
 ## Potent MV(*P*) for your Coffeescript
 
-Americano takes a shot at being one of those new-fangled Micro-JS-Frameworks. The goal of the project is to allow any Coffeescript developer to create an MVP style application without locking you into how they like to implement Widgets or Models.
+Americano takes a shot at being one of those new-fangled Micro-JS-Frameworks. The goal of the project is to allow any Coffeescript developer to create an MVP style application without locking them into how they like to implement Widgets or Models.
 
 It's really just the **P**
 
