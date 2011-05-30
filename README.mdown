@@ -8,14 +8,36 @@
     (_/                                         \   /_)
                                                  \_/
 
-## Potent MVP for your Coffeescript
+## Potent MV(*P*) for your Coffeescript
 
-Americano is a Model-View-Presenter Micro-Framework based off the GWT-Presenter project and it's implementation in the SheepdogInc.ca [project gTrax](http://app.gtraxapp.com/).
+Americano takes a shot at being one of those new-fangled Micro-JS-Frameworks. The goal of the project is to allow any Coffeescript developer to create an MVP style application without locking you into how they like to implement Widgets or Models.
 
- - Framework Code is in **Americano.coffee** in *scripts*
- - A sample MVP Implementation exists in **test.coffee**
+It's really just the **P**
 
-**NOT SAFE FOR USE.**
+Americano is a based off the GWT-Presenter project and it's implementation in the SheepdogInc.ca [project gTrax](http://app.gtraxapp.com/). 
+
+Framework Code is in **Americano.coffee** in *scripts*
+
+ - A very basic sample exists in **test.coffee**
+ - A more potent example is in **notes.coffee**
+ 
+# Sample Application: *Americanotes* #
+
+As an example of how "Just the **P**" Americano is; I created a sample application called "Americanotes". Just a simple application to create, edit notes, stored in your browser. *Handy*!
+
+A quick breakdown here shows the pieces pulled together for this app:
+
+### Model - Lawnchair.js ###
+
+All of the model code is written with Lawnchair, nothing in Americano to help with this; yet everything works smoothly.
+
+### View - jQuery ###
+
+The widgets, DOM manipulation, animation is all handled and created using jQuery. At anytime, you can pull it out and replace it with **//INSERT FAVOURITE DOM LIB HERE//**
+
+### Presenter - Americano ###
+
+Hurray.
 
 # Compile Steps
 
