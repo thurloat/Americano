@@ -74,11 +74,11 @@ class Handler
         Allows you to maintain it's stickyness to the scope and fire it.
     ###
     
-    constructor: (@name, @handler, @scope) ->
+    constructor: (@name, @scope, @handler) ->
         ### 
             @param {string} name The name of the event the handler will handle
-            @param {Function} handler The event handler function
             @param {Object} scope Where should one bind this event handler? to the window? to the wall?
+            @param {Function} handler The event handler function
         ###
         
     bind: () ->
@@ -128,15 +128,15 @@ class Presenter
                 hndlr.remove()
         @handlers = {}
 
-    register_handler: (name, handler, scope) ->
+    register_handler: (name, scope, handler) ->
         ### Registers an event handler with the Presenter with the option 
             of scoping it strictly to the presenter, globally, or an element
         
             @param {string} name Name of the event
-            @param {Function} handler The event handler
             @param {boolean | window | Element} scope You decide.
+            @param {Function} handler The event handler
         ###
-        hndlr = new Handler(name, handler, scope)
+        hndlr = new Handler(name, scope, handler)
 
         if scope and typeof scope is "object"
             hndlr.bind()
