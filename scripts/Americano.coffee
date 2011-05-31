@@ -15,8 +15,10 @@
 # in the SheepdogInc.ca [project gTrax](http://app.gtraxapp.com/). 
 
 # The [source for Americano](http://github.com/thurloat/Americano) is available
-# on GitHub.
+# on GitHub, along with examples of how to implement a sample application 
+# called *Americanotes*.
 
+## Check it out :)
 
 ### Presenter Class ###
 # You should subclass this guy for your Presenter Implementation.
