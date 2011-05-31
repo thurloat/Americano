@@ -286,15 +286,15 @@ class Application
     esp.register("getDB", -> db)
         
     # Singleton displays
-    noteDisplay = new NoteDisplay()
-    noteListDisplay = new NoteListDisplay()
-    notificationDisplay = new NotificationDisplay()
+    noteDisplay = new NoteDisplay
+    noteListDisplay = new NoteListDisplay
+    notificationDisplay = new NotificationDisplay
     
     # Register the display types
     esp.register('noteDisplayType', -> noteDisplay)
     esp.register('noteListDisplayType', -> noteListDisplay)
     esp.register('notificationDisplayType', -> notificationDisplay)
-    esp.register('noteListItemDisplayType', -> new NoteListItemDisplay())
+    esp.register('noteListItemDisplayType', -> new NoteListItemDisplay)
     
     # Create the presenters with all the stuff injected
     notePresenter = esp.create(NotePresenter)
