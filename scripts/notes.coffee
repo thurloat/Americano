@@ -1,6 +1,12 @@
-INJECTOR = new Injector
-
 class NotePresenter extends Presenter
+  
+  @PRESS =
+    display: 'noteDisplayType'
+  
+  @INJECT =
+    eventBus: 'getEventBus'
+    logger: 'getLogger'
+    DB: 'getDB'
     
   onBind: () ->
     
@@ -20,7 +26,7 @@ class NotePresenter extends Presenter
       @setNote event.data
       
       # Pass along a notification to mention that the new note has loaded.
-      INJECTOR.getEventBus().fire('notify', message: "Loaded Note:" + event.data.title)
+      @eventBus.fire('notify', message: "Loaded Note:" + event.data.title)
       
     # Register a handler on the save button's 'click' to save the note being
     # edited right now.
@@ -30,15 +36,15 @@ class NotePresenter extends Presenter
       @note.title = @display.getTitleBoxValue()
       @note.body = @display.getBodyBoxValue()
       
-      INJECTOR.getDB().save @note, =>
+      @DB.save @note, =>
         
         # Since data is stale now, fire a 'refreshDisplay' event so any 
         # presenter that needs to update it's info can do so with freshness.
-        INJECTOR.getEventBus().fire("refreshDisplay")
+        @eventBus.fire("refreshDisplay")
         
         # Send out a notification telling the user that the note saved 
         # correctly.
-        INJECTOR.getEventBus().fire("notify", message: "Note Saved")
+        @eventBus.fire("notify", message: "Note Saved")
       
     @registerHandler "refreshDisplay", true, (event) =>
       @fireHandler "newNote"
@@ -51,7 +57,7 @@ class NotePresenter extends Presenter
 
 class NoteDisplay extends Display
   # NoteDisplay class is the Editor for a note.  
-    
+
   container = $('<div/>', class:'editor')
     
   constructor: () ->
@@ -84,24 +90,32 @@ class NoteDisplay extends Display
 class NoteListPresenter extends Presenter
   # This NoteListPresenter manages a list of notes for the user.
   
+  @PRESS =
+    display: 'noteListDisplayType'
+  
+  @INJECT =
+    eventBus: 'getEventBus'
+    logger: 'getLogger'
+    DB: 'getDB'
+    
   onBind: () ->
     @notes = []
     
-    @registerHandler "click", @display.getNewNoteButton(), (event) ->
+    @registerHandler "click", @display.getNewNoteButton(), (event) =>
       # Create a new note, and push a notification saying so.
-      INJECTOR.getEventBus().fire("newNote", null)
-      INJECTOR.getEventBus().fire('notify', message: "Creating New Note")
+      @eventBus.fire("newNote", null)
+      @eventBus.fire('notify', message: "Creating New Note")
     
-    @registerHandler "noteClicked", true, (event) ->
+    @registerHandler "noteClicked", true, (event) =>
       # Listen to the child NodeListItemPresenters for a noteClicked event
       # and pass on the loadNote message through the event bus with the note
-      INJECTOR.getEventBus().fire("loadNote", event.data.note)
+      @eventBus.fire("loadNote", event.data.note)
       
-    @registerHandler "noteDeleteClicked", true, (event) ->
+    @registerHandler "noteDeleteClicked", true, (event) =>
       
-      INJECTOR.getEventBus().fire "notify", message: "Deleting Note"
-      INJECTOR.getDB().remove event.data.note.key, -> 
-        INJECTOR.getEventBus().fire "refreshDisplay"
+      @eventBus.fire "notify", message: "Deleting Note"
+      @DB.remove event.data.note.key, => 
+        @eventBus.fire "refreshDisplay"
     
     @registerHandler "refreshDisplay", true, (event) =>
       # Register a handler for refreshing the display when data is stale.
@@ -118,7 +132,7 @@ class NoteListPresenter extends Presenter
     @notes = []
     @display.clearNotes()
     
-    INJECTOR.getDB().all (notes) =>
+    @DB.all (notes) =>
       for note in notes
         @addNote(note)
     
@@ -126,7 +140,8 @@ class NoteListPresenter extends Presenter
     # Add a new note to the note list by creating a NoteListItemPresenter, and
     # adding it's widget to the display.
      
-    np = new NoteListItemPresenter note, new NoteListItemDisplay()
+    np = @esm.create(NoteListItemPresenter)
+    np.setNote note
     np.bind()
     
     @display.addNote np.getDisplay().asWidget()
@@ -161,11 +176,20 @@ class NoteListDisplay extends Display
 
 class NoteListItemPresenter extends Presenter
   # Presenter to handle the management of a Note List Item
+  @PRESS =
+    display: 'noteListItemDisplayType'
   
-  constructor: (@note, display) ->
-    # Here, we pass the note in as an arg to the constructor,
-    # and call the parent's constructor
-    super display
+  @INJECT =
+    eventBus: 'getEventBus'
+    logger: 'getLogger'
+    DB: 'getDB'
+    
+  # constructor: (@note, display) ->
+  #   # Here, we pass the note in as an arg to the constructor,
+  #   # and call the parent's constructor
+  #   super display
+  
+  setNote: (@note) ->
   
   onBind: ->
     
@@ -174,11 +198,11 @@ class NoteListItemPresenter extends Presenter
       # Fire the 'noteClicked' message on the event bus, so the NotePresenter
       # will hear it.
       
-      INJECTOR.getEventBus().fire 'noteClicked', note: @note
+      @eventBus.fire 'noteClicked', note: @note
     
     @registerHandler "click", @display.getDeleteButton(), (event) =>
       
-      INJECTOR.getEventBus().fire 'noteDeleteClicked', note: @note
+      @eventBus.fire 'noteDeleteClicked', note: @note
     
     @display.setText @note.title
 
@@ -207,6 +231,14 @@ class NoteListItemDisplay extends Display
 class NotificationPresenter extends Presenter
   # Simple Notification Window that will listen to 'notify' and display the message
   
+  @PRESS =
+    display: 'notificationDisplayType'
+  
+  @INJECT =
+    eventBus: 'getEventBus'
+    logger: 'getLogger'
+    DB: 'getDB'
+    
   onBind: ->
       
     # Listen to 'notify' globally
@@ -239,33 +271,45 @@ class NotificationDisplay extends Display
   asWidget: -> @container[0]
 
 class Application
-
+  
+  esp = new EspressoMachine()
   eventBus = new EventBus()
   logger = new Logger()
-  db = new Lawnchair "Notes", ->
-    console.log("Database Loaded.")
+  db = new Lawnchair "Notes", -> console.log("Database Loaded.")
 
   run: ->
-    # Register shared objects in the injector registry
-    INJECTOR.register("getEventBus", -> eventBus)
-    INJECTOR.register("getLogger", -> logger)
-    INJECTOR.register("getRootPanel", -> $("#application"))
-    INJECTOR.register("getDB", -> db)
-
-    # Create and bind all of the presenters for this application
-    notePresenter = new NotePresenter(new NoteDisplay())
-    notePresenter.bind()
-        
-    noteListPresenter = new NoteListPresenter(new NoteListDisplay())
-    noteListPresenter.bind()
     
-    notificationPresenter = new NotificationPresenter(new NotificationDisplay())
-    notificationPresenter.bind()
+    # Register shared objects in the injector registry
+    esp.register("getEventBus", -> eventBus)
+    esp.register("getLogger", -> logger)
+    esp.register("getRootPanel", -> $("#application"))
+    esp.register("getDB", -> db)
         
+    # Singleton displays
+    noteDisplay = new NoteDisplay()
+    noteListDisplay = new NoteListDisplay()
+    notificationDisplay = new NotificationDisplay()
+    
+    # Register the display types
+    esp.register('noteDisplayType', -> noteDisplay)
+    esp.register('noteListDisplayType', -> noteListDisplay)
+    esp.register('notificationDisplayType', -> notificationDisplay)
+    esp.register('noteListItemDisplayType', -> new NoteListItemDisplay())
+    
+    # Create the presenters with all the stuff injected
+    notePresenter = esp.create(NotePresenter)
+    noteListPresenter = esp.create(NoteListPresenter)    
+    notificationPresenter = esp.create(NotificationPresenter)
+    
+    # Bind all of the presenters
+    notePresenter.bind()
+    noteListPresenter.bind()
+    notificationPresenter.bind()
+    
     # Insert the presenter's display widgets into the DOM
-    INJECTOR.getRootPanel().append(notificationPresenter.getDisplay().asWidget())
-    INJECTOR.getRootPanel().append(notePresenter.getDisplay().asWidget())
-    INJECTOR.getRootPanel().append(noteListPresenter.getDisplay().asWidget())
+    esp.getRootPanel().append(notificationPresenter.getDisplay().asWidget())
+    esp.getRootPanel().append(notePresenter.getDisplay().asWidget())
+    esp.getRootPanel().append(noteListPresenter.getDisplay().asWidget())
 
 $(document).ready ->
 

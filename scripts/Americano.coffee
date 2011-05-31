@@ -19,7 +19,39 @@ class Injector
         ###
         @[name] = factory
 
+class EspressoMachine
+  # GWT-Style Injection Machine.
+  # Based off code from https://gist.github.com/998920 cc: bremac
+    
+  constructor: (dict) ->
+    @extend(dict)
 
+  extend: (dict) ->
+    for k, v of dict
+      @[k] = v
+    @
+  
+  register: (name, factory) ->
+    @[name] = factory
+  
+  create: (type) ->
+    if type.PRESS
+      pressArgs = []
+      for name, factory of type.PRESS
+        pressArgs.push @[factory](@)
+      typeInstance = new type(pressArgs...)
+    else
+      typeInstance = new type()
+    
+    @inject(typeInstance, type.INJECT)
+
+  inject: (obj, dict) ->
+    if dict?
+      for name, factory of dict
+        obj[name] = @[factory](@)
+    obj.esm = @
+    obj
+    
 class EventBus
     ### Event Bus class
         Keeping track of events, and firing events in the global scope
