@@ -4,7 +4,6 @@
 #       ) /    |_// (__(/_/ (__(_(__(_(_/ (_(_)   \     /
 #      (_/                                         \   /_)
 #                                                   \_/
-# Americano
 # **Americano** takes a shot at being one of those new-fangled Micro-JS-Frameworks.
 # The goal of the project is to allow any Coffeescript developer to create an
 # MVP style application without locking them into how they like to implement
