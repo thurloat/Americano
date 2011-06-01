@@ -1,9 +1,3 @@
-#         _____                                     )
-#        (, /  |                ,                  (   )
-#          /---| ___    _  __     _  _  __   ___  __)_(__
-#       ) /    |_// (__(/_/ (__(_(__(_(_/ (_(_)   \     /
-#      (_/                                         \   /_)
-#                                                   \_/
 # **Americano** takes a shot at being one of those new-fangled Micro-JS-Frameworks.
 # The goal of the project is to allow any Coffeescript developer to create an
 # MVP style application without locking them into how they like to implement
@@ -18,7 +12,7 @@
 # on GitHub, along with examples of how to implement a sample application 
 # called *Americanotes*.
 
-## Check it out :)
+#### Check it out :) ###
 
 ### Presenter Class ###
 # You should subclass this guy for your Presenter Implementation.

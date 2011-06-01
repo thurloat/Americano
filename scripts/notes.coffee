@@ -57,25 +57,26 @@ class NotePresenter extends Presenter
 
 class NoteDisplay extends Display
   # NoteDisplay class is the Editor for a note.  
-
-  container = $('<div/>', class:'editor')
     
   constructor: () ->
-    $('<h2/>', text: 'Note Editor').appendTo container
+    
+    @container = $('<div/>', class:'editor')
+    
+    $('<h2/>', text: 'Note Editor').appendTo @container
     
     # Title text box
-    $('<h4/>', text: 'Title').appendTo container
+    $('<h4/>', text: 'Title').appendTo @container
     @titleBox = $('<input/>', {type: 'text'})
-    @titleBox.appendTo container
+    @titleBox.appendTo @container
       
     # Body text area
-    $('<h4/>', text: 'Body').appendTo container
+    $('<h4/>', text: 'Body').appendTo @container
     @bodyBox = $('<textarea/>')
-    @bodyBox.appendTo container
+    @bodyBox.appendTo @container
       
     # Save button
     @saveButton = $('<input/>', {type: 'submit', value: 'Save'})
-    @saveButton.appendTo container
+    @saveButton.appendTo @container
       
   getSaveButton: -> @saveButton[0]
       
@@ -85,7 +86,7 @@ class NoteDisplay extends Display
   getBodyBoxValue: -> @bodyBox.val()
   setBodyBoxValue: (body) -> @bodyBox.val(body)
       
-  asWidget: -> container
+  asWidget: -> @container[0]
 
 class NoteListPresenter extends Presenter
   # This NoteListPresenter manages a list of notes for the user.
@@ -152,14 +153,15 @@ class NoteListDisplay extends Display
   # The NoteListDisplay displays the managed unordered list of notes in the UI
   # Nothing special here.
   
-  container = $('<div/>', class: 'noteList')
   
   constructor: () ->
+    @container = $('<div/>', class: 'noteList')
+    
     @noteWidgets = []
-    $('<h2>', text: 'My Notes').appendTo container
+    $('<h2>', text: 'My Notes').appendTo @container
     @newButton = $('<input/>', {type: 'submit', value: 'New Note'})
-    @newButton.appendTo(container)
-    @noteList = $('<ul/>').appendTo container
+    @newButton.appendTo(@container)
+    @noteList = $('<ul/>').appendTo @container
     
   getNoteList: -> @noteList[0]
   getNewNoteButton: -> @newButton[0]
@@ -172,7 +174,7 @@ class NoteListDisplay extends Display
     @noteWidgets = []
     @noteList.empty()
     
-  asWidget: -> container
+  asWidget: -> @container[0]
 
 class NoteListItemPresenter extends Presenter
   # Presenter to handle the management of a Note List Item
@@ -254,21 +256,25 @@ class NotificationDisplay extends Display
   constructor: ->
     @showingMessage = false
     
-    @container = $('<div/>', class: 'notification')  
-    @notification = $('<span/>', text: 'waiting on notifications')
-    @notification.appendTo @container
+    @container = document.createElement "div"
+    @container.setAttribute 'class', 'notification'
+    
+    @notification = document.createElement "span"
+    @notification.innerText = 'waiting on notifications'
+    
+    @container.appendChild @notification
     
   flashMessage: ->
     # Fancy message flashing
     if @showingMessage is false
       @showingMessage = true
-      @container.animate opacity: 'toggle', 250, =>
-        @container.animate opacity: 'toggle', 1500, =>
+      $(@container).animate opacity: 'toggle', 250, =>
+        $(@container).animate opacity: 'toggle', 1500, =>
           @showingMessage = false
 
 
-  setText: (text) -> @notification.text text
-  asWidget: -> @container[0]
+  setText: (text) -> @notification.innerText = text
+  asWidget: -> @container
 
 class Application
   
@@ -277,12 +283,17 @@ class Application
   logger = new Logger()
   db = new Lawnchair "Notes", -> console.log("Database Loaded.")
 
+  hasRun = false
+
   run: ->
-    
+    if hasRun
+      console.log "run"
+      return false
+    hasRun = true
     # Register shared objects in the injector registry
     esp.register("getEventBus", -> eventBus)
     esp.register("getLogger", -> logger)
-    esp.register("getRootPanel", -> $("#application"))
+    esp.register("getRootPanel", -> document.getElementById "application" )
     esp.register("getDB", -> db)
         
     # Singleton displays
@@ -307,11 +318,11 @@ class Application
     notificationPresenter.bind()
     
     # Insert the presenter's display widgets into the DOM
-    esp.getRootPanel().append(notificationPresenter.getDisplay().asWidget())
-    esp.getRootPanel().append(notePresenter.getDisplay().asWidget())
-    esp.getRootPanel().append(noteListPresenter.getDisplay().asWidget())
+    esp.getRootPanel().appendChild notificationPresenter.getDisplay().asWidget()
+    esp.getRootPanel().appendChild notePresenter.getDisplay().asWidget()    
+    esp.getRootPanel().appendChild noteListPresenter.getDisplay().asWidget()
 
-$(document).ready ->
+window.ready ->
 
   app = new Application
   if window
