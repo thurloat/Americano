@@ -16,7 +16,7 @@ div#application > h1{
 }
 
 div.notification{
-  display: none;
+  opacity: 0.0;
   position: absolute;
   top: 6px;
   width: 488px;

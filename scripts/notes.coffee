@@ -60,33 +60,38 @@ class NoteDisplay extends Display
     
   constructor: () ->
     
-    @container = $('<div/>', class:'editor')
-    
-    $('<h2/>', text: 'Note Editor').appendTo @container
-    
     # Title text box
-    $('<h4/>', text: 'Title').appendTo @container
-    @titleBox = $('<input/>', {type: 'text'})
-    @titleBox.appendTo @container
-      
+    @titleBox = document.createElement "input"
+    @titleBox.setAttribute 'type', 'text'
+    
     # Body text area
-    $('<h4/>', text: 'Body').appendTo @container
-    @bodyBox = $('<textarea/>')
-    @bodyBox.appendTo @container
+    bodyTitle = document.createElement "h4"
+    bodyTitle.innerText = "Body"
+
+    @bodyBox = document.createElement "textarea"    
       
     # Save button
-    @saveButton = $('<input/>', {type: 'submit', value: 'Save'})
-    @saveButton.appendTo @container
+    @saveButton = document.createElement "input"
+    @saveButton.setAttribute 'type', 'submit'
+    @saveButton.setAttribute 'value', 'Save'
+        
+    @container = document.createElement "div"
+    @container.setAttribute 'class', 'editor'
+    @container.innerHTML = "<h2>Note Editor</h2><h4>Title</h4>"
+    @container.appendChild @titleBox
+    @container.appendChild bodyTitle
+    @container.appendChild @bodyBox
+    @container.appendChild @saveButton
       
-  getSaveButton: -> @saveButton[0]
-      
-  getTitleBoxValue: -> @titleBox.val()
-  setTitleBoxValue: (title) -> @titleBox.val(title)  
+  getSaveButton: -> @saveButton
+
+  getTitleBoxValue: -> @titleBox.value
+  setTitleBoxValue: (title) -> @titleBox.value = title
     
-  getBodyBoxValue: -> @bodyBox.val()
-  setBodyBoxValue: (body) -> @bodyBox.val(body)
+  getBodyBoxValue: -> @bodyBox.value
+  setBodyBoxValue: (body) -> @bodyBox.value = body
       
-  asWidget: -> @container[0]
+  asWidget: -> @container
 
 class NoteListPresenter extends Presenter
   # This NoteListPresenter manages a list of notes for the user.
@@ -169,18 +174,19 @@ class NoteListDisplay extends Display
     
     @container.appendChild @newButton
     
-    @noteList = $('<ul/>').appendTo @container
+    @noteList = document.createElement "ul"
+    @container.appendChild @noteList
     
-  getNoteList: -> @noteList[0]
+  getNoteList: -> @noteList
   getNewNoteButton: -> @newButton
   
   addNote: (noteWidget) ->
-    @noteList.append noteWidget
+    @noteList.appendChild noteWidget
     @noteWidgets.push noteWidget
     
   clearNotes: () ->
     @noteWidgets = []
-    @noteList.empty()
+    @noteList.innerHTML = ""
     
   asWidget: -> @container
 
@@ -279,8 +285,8 @@ class NotificationDisplay extends Display
     # Fancy message flashing
     if @showingMessage is false
       @showingMessage = true
-      $(@container).animate opacity: 'toggle', 250, =>
-        $(@container).animate opacity: 'toggle', 1500, =>
+      emile @container, 'opacity:1.0', duration: 250, =>
+        emile @container, 'opacity:0', duration: 1500, =>
           @showingMessage = false
 
 
