@@ -6,14 +6,13 @@
      ) /    |_// (__(/_/ (__(_(__(_(_/ (_(_)   \     /
     (_/                                         \   /_)
                                                  \_/
-# Americano
 ## Adding P to your .coffee
 
-Americano takes a shot at being one of those new-fangled Micro-JS-Frameworks. The goal of the project is to allow any Coffeescript developer to create an MVP style application without locking them into how they like to implement Widgets or Models.
+*Americano* takes a shot at being one of those new-fangled Micro-JS-Frameworks. The goal of the project is to allow any Coffeescript developer to create an MVP style application without locking them into how they like to implement Widgets or Models.
 
 It's really just the **P**
 
-Americano is a based off the GWT-Presenter project and it's implementation in the SheepdogInc.ca [project gTrax](http://app.gtraxapp.com/). 
+Americano is a based on the GWT-Presenter project and it's implementation in the SheepdogInc.ca [project gTrax](http://app.gtraxapp.com/). 
 
 Framework Code is in **Americano.coffee** in *scripts*
 
@@ -32,13 +31,13 @@ A quick breakdown here shows the pieces pulled together for this app:
 
 All of the model code is written with Lawnchair, nothing in Americano to help with this; yet everything works smoothly.
 
-### View - jQuery ###
+### View - Nothing Special? ###
 
-The widgets, DOM manipulation, animation is all handled and created using jQuery. At anytime, you can pull it out and replace it with **//INSERT FAVOURITE DOM LIB HERE//**
+The widgets, DOM manipulation, and building are all done with standard Javascript. Animation of the Notification window is done with [emile.js](http://github.com/madrobby/emile). At anytime, you can pull it out and replace it with whatever more feature rich DOM framework that you like most! That's the beauty.
 
 ### Presenter - Americano ###
 
-Hurray.
+Enough said.
 
 # Compile Steps
 
