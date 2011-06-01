@@ -155,16 +155,24 @@ class NoteListDisplay extends Display
   
   
   constructor: () ->
-    @container = $('<div/>', class: 'noteList')
+    
+    @container = document.createElement "div"
+    @container.setAttribute 'class', 'noteList'
     
     @noteWidgets = []
-    $('<h2>', text: 'My Notes').appendTo @container
-    @newButton = $('<input/>', {type: 'submit', value: 'New Note'})
-    @newButton.appendTo(@container)
+    
+    @container.innerHTML = "<h2>My Notes</h2>"
+    
+    @newButton = document.createElement "input"
+    @newButton.setAttribute "type", "submit"
+    @newButton.setAttribute "value", "New Note"
+    
+    @container.appendChild @newButton
+    
     @noteList = $('<ul/>').appendTo @container
     
   getNoteList: -> @noteList[0]
-  getNewNoteButton: -> @newButton[0]
+  getNewNoteButton: -> @newButton
   
   addNote: (noteWidget) ->
     @noteList.append noteWidget
@@ -174,7 +182,7 @@ class NoteListDisplay extends Display
     @noteWidgets = []
     @noteList.empty()
     
-  asWidget: -> @container[0]
+  asWidget: -> @container
 
 class NoteListItemPresenter extends Presenter
   # Presenter to handle the management of a Note List Item
@@ -212,23 +220,26 @@ class NoteListItemDisplay extends Display
   # NoteListItemDisplay is EXTRA nothing special.
    
   constructor: () ->
-    @container = $('<li/>')
-    @noteLabel = $('<span/>').appendTo @container
     
-    deleteParams = 
-      class: 'delete'
-      text: 'x'
+    @noteLabel = document.createElement "span"
+
+    @container = document.createElement "li"
+    @container.appendChild @noteLabel
     
-    @deleteButton = $('<span/>', deleteParams)
-    @deleteButton.appendTo @container
     
-  getListItem: -> @noteLabel[0]
+    @deleteButton = document.createElement "span"
+    @deleteButton.setAttribute 'class', 'delete'
+    @deleteButton.innerText = 'x'
+
+    @container.appendChild @deleteButton
+    
+  getListItem: -> @noteLabel
   
-  getDeleteButton: -> @deleteButton[0]
+  getDeleteButton: -> @deleteButton
   
-  setText: (text) -> @noteLabel.text text
+  setText: (text) -> @noteLabel.innerText = text
   
-  asWidget: -> @container[0]
+  asWidget: -> @container
 
 class NotificationPresenter extends Presenter
   # Simple Notification Window that will listen to 'notify' and display the message
