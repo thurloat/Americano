@@ -23,8 +23,8 @@ All events </p>             </td>             <td class="code">               <d
 
 <p>The method to call to put the processing gears into action and
 bind all the events   </p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">bind: </span><span class="nf">() -&gt;</span>
-        <span class="vi">@bound = </span><span class="kc">true</span>
-        <span class="nx">@onBind</span><span class="p">()</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <h4>ensureBound</h4>
+        <span class="nx">@onBind</span><span class="p">()</span>
+        <span class="vi">@bound = </span><span class="kc">true</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-10">&#182;</a>               </div>               <h4>ensureBound</h4>
 
 <p>Makes sure the presenter is bound, if not it will call bind for you</p>             </td>             <td class="code">               <div class="highlight"><pre>    <span class="nv">ensureBound: </span><span class="nf">() -&gt;</span>
         <span class="k">if</span> <span class="o">not</span> <span class="nx">@bound</span>
