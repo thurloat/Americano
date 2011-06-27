@@ -12,7 +12,13 @@
 # on GitHub, along with examples of how to implement a sample application 
 # called *Americanotes*.
 
-#### Check it out :) ###
+#### Still a WIP ###
+
+# You can help! Please submit feature requests and bug reports to GitHub Issues,
+# or even better, Fork the project and submit a pull request! Good Luck!
+
+
+## The Codes ##
 
 ### Presenter Class ###
 # You should subclass this guy for your Presenter Implementation.
@@ -34,9 +40,15 @@ class Presenter
     # The method to call to put the processing gears into action and
     # bind all the events   
     bind: () ->
-        @onBind()
         @bound = true
+        @onBind()
 
+    #####ensureBound#####
+    # Makes sure the presenter is bound, if not it will call bind for you
+    ensureBound: () ->
+        if not @bound
+          @bind()
+        
     #####onBind#####
     # Shoddy interface. `:P`
     onBind: () ->
